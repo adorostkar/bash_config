@@ -2,8 +2,8 @@
 
 set -e
 
-ABRV_FILE="${DOTFILES}/caches/Abbreviations.txt"
-ABRV_FILE_BAK="${DOTFILES}/caches/Abbreviations.txt.bak"
+ABRV_FILE="$HOME/.cache/Abbreviations.txt"
+ABRV_FILE_BAK="$HOME/.cache/Abbreviations.txt.bak"
 
 function help(){
 cat<<HELP
@@ -11,7 +11,7 @@ The abreviation manager
 
 Usage: $(basename $0) [option] [abreviation]
 
-Options: 
+Options:
     -a/--add      : add abbreviation
     			-a [abbreviation] [Description]
     -d/--delete   : delete abbreviations listed with space between them
