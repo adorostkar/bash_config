@@ -4,3 +4,5 @@ DOTBASH_DIR=$(cd $(dirname $(readlink -f $0)); pwd -P)
 
 echo "source $DOTBASH_DIR/bashrc.dot" >> $HOME/.bashrc
 echo "source $DOTBASH_DIR/bash_profile.dot" >> $HOME/.bash_profile
+mkdir -p $HOME/.cache
+ln -s caches/* $HOME/.cache
