@@ -1,0 +1,155 @@
+#!/usr/bin/env bash
+
+set -e
+
+ABRV_FILE="${DOTFILES}/caches/Abbreviations.txt"
+ABRV_FILE_BAK="${DOTFILES}/caches/Abbreviations.txt.bak"
+
+function help(){
+cat<<HELP
+The abreviation manager
+
+Usage: $(basename $0) [option] [abreviation]
+
+Options: 
+    -a/--add      : add abbreviation
+    			-a [abbreviation] [Description]
+    -d/--delete   : delete abbreviations listed with space between them
+    			-d [abbreviation]
+    -s/--start    : Find partial matches starting with the abbreviations listed
+    -e/--end      : Find partial matches ending with the abbreviations listed
+    -p/--partial  : equivalent to -s -e
+    -m/--means    : Print only the meaning without the abbreviation
+    -h/--help     : Print help
+
+HELP
+}
+
+if [[ $# -eq 0 ]]
+then
+	help
+	exit 0
+fi
+
+SHORT=0
+STARTSWITH=0
+ENDSWITH=0
+ACTION=get
+
+# Process options and save positional target
+POSITIONAL=()
+while [[ $# -gt 0 ]]
+do
+	key="$1"
+
+	case ${key} in
+		-a|--add)
+			shift # remove -a --add
+			ACTION=add
+			;;
+		-d|--delete)
+			shift
+			ACTION=del
+			;;
+		-m|--means)
+			shift
+			SHORT=1
+			;;
+		-s|--start)
+			shift
+			STARTSWITH=1
+			;;
+		-e|--end)
+			shift
+			ENDSWITH=1
+			;;
+		-p|--partial)
+			shift
+			STARTSWITH=1
+			ENDSWITH=1
+			;;
+		-h|--help)
+			help
+			exit 0
+			;;
+		*)    # unknown option
+			POSITIONAL+=("$1") # save it in an array for later
+			shift # past argument
+			;;
+	esac
+done
+set -- "${POSITIONAL[@]}" # restore positional parameters
+
+trap cleanup 1 2 3 6
+
+function cleanup(){
+	if [ ! -f ${ABRV_FILE} ]
+	then
+		echo "File is missing, trying to restore from backup"
+		cp ${ABRV_FILE_BAK} ${ABRV_FILE}
+	fi
+}
+
+# Functions to get or delet abrviations
+function get_abrv(){
+	for var in "$@"
+	do
+		FILTER=$(printf $ABRV_PATTERN $var)
+		cat ${ABRV_FILE} | grep -Pi ${FILTER} | sed ${FORMAT}
+	done
+}
+
+function del_abrv(){
+	for var in "$@"
+	do
+		FILTER=$(printf ${ABRV_PATTERN} $var)
+		sed -i '/'${FILTER}'/Id' ${ABRV_FILE}
+	done
+}
+
+function add_abrv(){
+	# check the answer in 
+	# https://stackoverflow.com/questions/12487424/uppercase-first-character-in-a-variable-with-bash
+	abrv_key=${1^^}
+	shift # remove abbrv key
+	string_val=''
+	for var in $@
+	do
+		# make the word lower case
+		var=${var,,}
+		# make the first letter uppercase and add to the string
+		string_val="${string_val} ${var^}"
+	done
+	echo -e "${abrv_key}=${string_val}" >> ${ABRV_FILE}
+	sort ${ABRV_FILE} | uniq > ${ABRV_FILE_BAK}
+	rm -f ${ABRV_FILE}
+	cp ${ABRV_FILE_BAK} ${ABRV_FILE}
+}
+
+# If whole match then the abbreviation should start at 
+# the begining of the line and end at the equal sign	
+ABRV_PATTERN='^'
+if [[ ${ENDSWITH} -eq 0 ]]
+then
+	ABRV_PATTERN=${ABRV_PATTERN}'%s'
+else
+	ABRV_PATTERN=${ABRV_PATTERN}'[\w-]*%s'
+fi
+
+if [[ ${STARTSWITH} -eq 1 ]]
+then
+	ABRV_PATTERN=${ABRV_PATTERN}'[\w-]*'
+fi
+ABRV_PATTERN=${ABRV_PATTERN}'='
+
+# If not short form, replace the equal sign.
+# If short form remove the abbreviation itself.
+if [[ ${SHORT} -eq 0 ]]
+then
+	FORMAT='s/=/\t\t/'
+else
+	FORMAT='s/.*=//'
+fi
+
+# If we are here, we want to perform an action
+"${ACTION}_abrv" $@

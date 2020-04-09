@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+# Lazy copy-paste commands
+# Ever pasted "$ somecommand" into the terminal and gotten this error?
+# -bash: $: command not found
+
+echo 'Quit pasting in commands from the internet, you lazy bum.'
+"$@"

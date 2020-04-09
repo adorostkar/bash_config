@@ -1,0 +1,8 @@
+for i in {0..255} ; do
+        printf "\x1b[38;5;${i}m"
+        for j in {0..4}; do
+                printf "\xE2\x96\x88"
+        done
+        printf " %3s " "${i}"
+done
+printf "\n"
