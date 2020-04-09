@@ -1,11 +1,11 @@
-# Where the magic happens.
-DOTBASH_DIR=$(cd $(dirname $(readlink -f $0)); pwd -P)
 
 for file in source/*; do
   source "$file"
 done
 
-export PATH=$PATH:$DOTBASH_DIR/bin
+
+BIN_DIR=$(cd $(readlink -f bin/); pwd -P)
+export PATH=$PATH:$BIN_DIR
 
 # || : calls the null command which always has the status code 0
 [ -f ~/.bashrc.user ] && source ~/.bashrc.user || :
