@@ -1,11 +1,11 @@
 
-for file in source/*; do
+BASH_DIR_PATH=$(cd $(dirname $(readlink -f $BASH_SOURCE)); pwd -P)
+for file in ${BASH_DIR_PATH}/source/*; do
   source "$file"
 done
 
 
-BIN_DIR=$(cd $(readlink -f bin/); pwd -P)
-export PATH=$PATH:$BIN_DIR
+export PATH=$PATH:${BASH_DIR_PATH}/bin
 
 # || : calls the null command which always has the status code 0
 [ -f ~/.bashrc.user ] && source ~/.bashrc.user || :
