@@ -5,4 +5,20 @@ DOTBASH_DIR=$(cd $(dirname $(readlink -f $0)); pwd -P)
 echo "source $DOTBASH_DIR/bashrc.dot" >> $HOME/.bashrc
 echo "source $DOTBASH_DIR/bash_profile.dot" >> $HOME/.bash_profile
 mkdir -p $HOME/.cache
-ln -s caches/* $HOME/.cache
+ln -sf caches/* $HOME/.cache
+
+source ${DOTBASH_DIR}/source/00_tools.sh
+
+SUDO=$(type -P sudo)
+if [[ "$SUDO" == "" ]]
+then
+      e_error "No sudo found, trying to continue without it"
+fi
+export SUDO
+
+for file in ${DOTBASH_DIR}/init/*; do
+    e_header $(basename $file)
+    source $file
+done
+
+uset SUDO
