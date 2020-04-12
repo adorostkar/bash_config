@@ -1,13 +1,43 @@
 #!/usr/bin/env bash
-
 DOTBASH_DIR=$(cd $(dirname $(readlink -f $0)); pwd -P)
 
+function help(){
+cat<<HELP
+install bash configs on a system
+Usage: $(basename $0) [options]
+
+Options:
+    -i/--init     : Run init scripts
+HELP
+}
+
+DO_INIT=0
+source ${DOTBASH_DIR}/source/00_tools.sh
+
+while [[ $# -gt 0 ]];do
+    key="$1"
+
+    case ${key} in
+        -i|--init)
+            shift
+            DO_INIT=1
+            shift
+            ;;
+        *)
+            help
+            exit 1;
+            ;;
+    esac
+done
+
+
+e_arrow "Writing to bashrc"
 echo "source $DOTBASH_DIR/bashrc.dot" >> $HOME/.bashrc
 echo "source $DOTBASH_DIR/bash_profile.dot" >> $HOME/.bash_profile
+
+e_arrow "Linking cache files"
 mkdir -p $HOME/.cache
 ln -sf caches/* $HOME/.cache
-
-source ${DOTBASH_DIR}/source/00_tools.sh
 
 SUDO=$(type -P sudo)
 if [[ "$SUDO" == "" ]]
@@ -16,9 +46,12 @@ then
 fi
 export SUDO
 
-for file in ${DOTBASH_DIR}/init/*; do
-    e_header $(basename $file)
-    source $file
-done
+if [ $DO_INIT -eq 1 ]; then
+    e_arrow "Performing initialization"
+    for file in ${DOTBASH_DIR}/init/*; do
+        e_header $(basename $file)
+        source $file
+    done
+fi
 
-uset SUDO
+unset SUDO
