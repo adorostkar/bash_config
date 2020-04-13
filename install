@@ -57,10 +57,12 @@ if [ $DO_LINK -eq 1 ] && [ $DO_COPY -eq 1 ]; then
     exit 1
 fi
 
-
 e_arrow "Writing to bashrc"
 echo "source $DOTBASH_DIR/bashrc.dot" >> $HOME/.bashrc
 echo "source $DOTBASH_DIR/bash_profile.dot" >> $HOME/.bash_profile
+
+e_arrow "Creating $HOME/.bashrc.user"
+touch $HOME/.bashrc.user
 
 mkdir -p $HOME/.cache
 if [ $DO_LINK -eq 1 ];then
