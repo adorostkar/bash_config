@@ -36,17 +36,14 @@ while [[ $# -gt 0 ]];do
         -i|--init)
             shift
             DO_INIT=1
-            shift
             ;;
         -l|--link)
             shift
             DO_LINK=1
-            shift
             ;;
         -c|--copy)
             shift
             DO_COPY=1
-            shift
             ;;
         *)
             help
