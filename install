@@ -53,7 +53,7 @@ while [[ $# -gt 0 ]];do
 done
 
 if [ $DO_LINK -eq 1 ] && [ $DO_COPY -eq 1 ]; then
-    echo "Copy and link options can't be active at the same time"
+    e_error "Copy and link options can't be active at the same time"
     exit 1
 fi
 
