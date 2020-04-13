@@ -8,10 +8,25 @@ Usage: $(basename $0) [options]
 
 Options:
     -i/--init     : Run init scripts
+    -l/--link     : Link cache files
+    -c/--copy     : Copy cache files (Not compatible with -l option)
 HELP
 }
 
+function backup(){
+    if [ -e $1 ]; then
+        mv $1 $1_bak
+        if [ $? -eq 0 ];then
+            e_success "$1 backed up to $1_bak"
+        else
+            exit 1
+        fi
+    fi
+}
+
 DO_INIT=0
+DO_LINK=0
+DO_COPY=0
 source ${DOTBASH_DIR}/source/00_tools.sh
 
 while [[ $# -gt 0 ]];do
@@ -23,6 +38,16 @@ while [[ $# -gt 0 ]];do
             DO_INIT=1
             shift
             ;;
+        -l|--link)
+            shift
+            DO_LINK=1
+            shift
+            ;;
+        -c|--copy)
+            shift
+            DO_COPY=1
+            shift
+            ;;
         *)
             help
             exit 1;
@@ -30,14 +55,32 @@ while [[ $# -gt 0 ]];do
     esac
 done
 
+if [ $DO_LINK -eq 1 ] && [ $DO_COPY -eq 1 ]; then
+    echo "Copy and link options can't be active at the same time"
+    exit 1
+fi
+
 
 e_arrow "Writing to bashrc"
 echo "source $DOTBASH_DIR/bashrc.dot" >> $HOME/.bashrc
 echo "source $DOTBASH_DIR/bash_profile.dot" >> $HOME/.bash_profile
 
-e_arrow "Linking cache files"
 mkdir -p $HOME/.cache
-ln -sf caches/* $HOME/.cache
+if [ $DO_LINK -eq 1 ];then
+    e_arrow "Linking cache files"
+    for f in ${DOTBASH_DIR}/caches/*;do
+        backup $HOME/.cache/$(basename $f)
+    done
+    ln -sf ${DOTBASH_DIR}/caches/* $HOME/.cache
+fi
+
+if [ $DO_COPY -eq 1 ];then
+    e_arrow "Copying cache files"
+    for f in ${DOTBASH_DIR}/caches/*;do
+        backup $HOME/.cache/$(basename $f)
+    done
+    cp ${DOTBASH_DIR}/caches/* $HOME/.cache
+fi
 
 SUDO=$(type -P sudo)
 if [[ "$SUDO" == "" ]]
