@@ -49,7 +49,6 @@ export SUDO
 if [ $DO_INIT -eq 1 ]; then
     e_arrow "Performing initialization"
     for file in ${DOTBASH_DIR}/init/*; do
-        e_header $(basename $file)
         source $file
     done
 fi
