@@ -42,7 +42,9 @@ apt_packages+=(
   nmap
   python-pip
   stow
+  snapd
   telnet
+  tig
   tmux
   tree
   unzip
