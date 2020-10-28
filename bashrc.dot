@@ -5,6 +5,7 @@ for file in ${BASH_DIR_PATH}/source/*; do
 done
 
 export PATH=$PATH:${BASH_DIR_PATH}/bin
+source $BASH_DIR_PATH/vendor/goto/goto.sh
 
 # || : calls the null command which always has the status code 0
 [ -f ~/.bashrc.user ] && source ~/.bashrc.user || :
