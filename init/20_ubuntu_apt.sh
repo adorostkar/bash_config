@@ -3,27 +3,24 @@ is_ubuntu || return 1
 
 e_arrow "Installing apt packages"
 
-apt_keys=()
-apt_source_files=()
 apt_source_texts=()
 apt_packages=()
-deb_installed=()
-deb_sources=()
 
 # Ubuntu distro release name, eg. "xenial"
 release_name=$(lsb_release -c | awk '{print $2}')
 
-function add_ppa() {
-  apt_source_texts+=($1)
-  IFS=':/' eval 'local parts=($1)'
-  apt_source_files+=("${parts[1]}-ubuntu-${parts[2]}-$release_name")
-}
 
 #############################
 # WHAT DO WE NEED TO INSTALL?
 #############################
 
-# Misc.
+apt_source_texts+=(
+  ppa:jonathonf/vim
+)
+apt_packages+=(
+  vim
+)
+# Packages
 apt_packages+=(
   build-essential # contains gcc, g++
   autoconf
@@ -34,6 +31,8 @@ apt_packages+=(
   exuberant-ctags
   emacs
   evince
+  exfat-fuse
+  exfat-utils
   rig
   git
   graphviz
@@ -48,7 +47,6 @@ apt_packages+=(
   tmux
   tree
   unzip
-  vim
 )
 
 if is_ubuntu_desktop; then
@@ -70,6 +68,11 @@ fi
 # ACTUALLY DO THINGS
 ####################
 
+# adding ppa repos
+for pparep in "${apt_source_texts[@]}"; do
+    e_header "Adding $pparep"
+    sudo add-apt-repository $pparep
+done
 # Update APT.
 e_header "Updating APT"
 ${SUDO} apt-get -qq update
