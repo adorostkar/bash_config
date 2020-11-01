@@ -5,9 +5,7 @@ e_arrow "Installing apt packages"
 
 apt_source_texts=()
 apt_packages=()
-
-# Ubuntu distro release name, eg. "xenial"
-release_name=$(lsb_release -c | awk '{print $2}')
+snap_packages=()
 
 
 #############################
@@ -49,6 +47,10 @@ apt_packages+=(
   unzip
 )
 
+snap_packages+=(
+  go
+)
+
 if is_ubuntu_desktop; then
   # Misc
   apt_packages+=(
@@ -61,6 +63,9 @@ if is_ubuntu_desktop; then
     xclip
     zenmap
   )
+snap_packages+=(
+  vlc
+)
 
 fi
 
@@ -95,3 +100,16 @@ if (( ${#apt_packages[@]} > 0 )); then
   done
 fi
 
+# Install snap packages.
+installed_snap_packages="$(snap list | awk '{print $1}'  | uniq)"
+snap_packages=($(setdiff "${snap_packages[*]}" "$installed_snap_packages"))
+
+if (( ${#snap_packages[@]} > 0 )); then
+  e_header "Installing SNAP packages (${#snap_packages[@]})"
+  for package in "${snap_packages[@]}"; do
+    e_arrow "$package"
+    [[ "$(type -t preinstall_$package)" == function ]] && preinstall_$package
+    ${SUDO} snap install "$package" > /dev/null && \
+    [[ "$(type -t postinstall_$package)" == function ]] && postinstall_$package
+  done
+fi
