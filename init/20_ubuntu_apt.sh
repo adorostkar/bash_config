@@ -49,12 +49,14 @@ apt_packages+=(
 
 snap_packages+=(
   go
+  "nvim --classic"
 )
 
 if is_ubuntu_desktop; then
   # Misc
   apt_packages+=(
     fonts-mplus
+    gnome-sushi
     gnome-tweak-tool
     k4dirstat
     openssh-server
