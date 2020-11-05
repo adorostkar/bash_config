@@ -52,6 +52,8 @@ snap_packages+=(
   "nvim --classic"
 )
 
+is_ubuntu_desktop && snap_packages+=(spotify)
+
 if is_ubuntu_desktop; then
   # Misc
   apt_packages+=(

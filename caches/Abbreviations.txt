@@ -242,3 +242,4 @@ VLAN=Virtual Local Area Networks
 WCDMA=Wideband Code Division Multiple Access (3G)
 WM=Washing Machine
 XFT=Cross (X) Functional Team
+KPI= Key Performance Indicator
