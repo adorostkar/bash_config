@@ -39,6 +39,7 @@ apt_packages+=(
   nmap
   python-pip
   stow
+  systemtap
   snapd
   telnet
   tig
