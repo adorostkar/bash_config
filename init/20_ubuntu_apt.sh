@@ -50,8 +50,11 @@ apt_packages+=(
 
 snap_packages+=(
   go
-  "nvim --classic"
+  nvim
 )
+
+nvim_options="--classic"
+go_options="--classic"
 
 is_ubuntu_desktop && snap_packages+=(spotify)
 
@@ -64,13 +67,12 @@ if is_ubuntu_desktop; then
     k4dirstat
     openssh-server
     unity-tweak-tool
-    vlc
     xclip
     zenmap
   )
-snap_packages+=(
-  vlc
-)
+  snap_packages+=(
+    vlc
+  )
 
 fi
 
@@ -81,7 +83,7 @@ fi
 # adding ppa repos
 for pparep in "${apt_source_texts[@]}"; do
     e_header "Adding $pparep"
-    sudo add-apt-repository $pparep
+    sudo add-apt-repository $pparep -y
 done
 # Update APT.
 e_header "Updating APT"
@@ -112,9 +114,9 @@ snap_packages=($(setdiff "${snap_packages[*]}" "$installed_snap_packages"))
 if (( ${#snap_packages[@]} > 0 )); then
   e_header "Installing SNAP packages (${#snap_packages[@]})"
   for package in "${snap_packages[@]}"; do
-    e_arrow "$package"
+    e_arrow "$package $(eval echo \$${package}_options)"
     [[ "$(type -t preinstall_$package)" == function ]] && preinstall_$package
-    ${SUDO} snap install "$package" > /dev/null && \
+    ${SUDO} snap install "$package" $(eval echo \$${package}_options) > /dev/null && \
     [[ "$(type -t postinstall_$package)" == function ]] && postinstall_$package
   done
 fi
