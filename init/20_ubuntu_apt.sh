@@ -51,10 +51,12 @@ apt_packages+=(
 snap_packages+=(
   go
   nvim
+  node
 )
 
 nvim_options="--classic"
 go_options="--classic"
+node_options="--classic --channel=14/stable"
 
 is_ubuntu_desktop && snap_packages+=(spotify)
 
