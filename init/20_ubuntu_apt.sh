@@ -46,6 +46,7 @@ apt_packages+=(
   tmux
   tree
   unzip
+  fonts-powerline
 )
 
 snap_packages+=(
