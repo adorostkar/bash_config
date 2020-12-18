@@ -22,7 +22,9 @@ apt_packages+=(
 apt_packages+=(
   build-essential # contains gcc, g++
   autoconf
-  python-all-dev
+  python-all-dev # python2.7 not needed any longer
+  python-pip
+  python3-pip
   boxes
   cmake
   curl
@@ -37,7 +39,7 @@ apt_packages+=(
   htop
   imagemagick
   nmap
-  python-pip
+  node
   stow
   systemtap
   snapd
@@ -52,12 +54,13 @@ apt_packages+=(
 snap_packages+=(
   go
   nvim
-  node
 )
 
 nvim_options="--classic"
 go_options="--classic"
-node_options="--classic --channel=14/stable"
+preinstall_node(){
+    curl -sL https://deb.nodesource.com/setup_14.x | sudo bash -
+}
 
 is_ubuntu_desktop && snap_packages+=(spotify)
 
