@@ -18,6 +18,15 @@ apt_source_texts+=(
 apt_packages+=(
   vim
 )
+
+# Conflicts with prefix in tmux
+# apt_source_texts+=(
+#   ppa:agornostal/ulauncher
+# )
+# apt_packages+=(
+#   ulauncher
+# )
+
 # Packages
 apt_packages+=(
   build-essential # contains gcc, g++
@@ -28,11 +37,13 @@ apt_packages+=(
   boxes
   cmake
   curl
+  default-jdk
   exuberant-ctags
   emacs
   evince
   exfat-fuse
   exfat-utils
+  kdenlive
   rig
   git
   graphviz
@@ -40,6 +51,7 @@ apt_packages+=(
   imagemagick
   nmap
   node
+  p7zip-full
   stow
   systemtap
   snapd
@@ -54,6 +66,7 @@ apt_packages+=(
 snap_packages+=(
   go
   nvim
+  foliate
 )
 
 nvim_options="--classic"
