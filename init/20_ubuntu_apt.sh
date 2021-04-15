@@ -43,6 +43,7 @@ apt_packages+=(
   evince
   exfat-fuse
   exfat-utils
+  guake
   kdenlive
   rig
   git
@@ -59,6 +60,7 @@ apt_packages+=(
   tig
   tmux
   tree
+  texlive-full
   unzip
   fonts-powerline
 )
