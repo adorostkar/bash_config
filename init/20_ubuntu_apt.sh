@@ -31,8 +31,7 @@ apt_packages+=(
 apt_packages+=(
   build-essential # contains gcc, g++
   autoconf
-  python-all-dev # python2.7 not needed any longer
-  python-pip
+  python3-all-dev # python2.7 not needed any longer
   python3-pip
   boxes
   cmake
