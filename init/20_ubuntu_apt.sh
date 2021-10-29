@@ -59,7 +59,6 @@ apt_packages+=(
   tig
   tmux
   tree
-  texlive-full
   unzip
   fonts-powerline
 )
